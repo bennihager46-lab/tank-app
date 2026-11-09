@@ -209,14 +209,33 @@ function GitHubClient({ owner, repo, branch, token }) {
       if (!res.ok) throw await errorFrom(res);
       return (await res.json()).content.sha;
     },
-    /** Prüft, ob der Token auf dieses Repo schreiben darf. */
+    /**
+     * Prüft, ob der TOKEN (nicht das Konto) in dieses Repo schreiben darf.
+     * Die Repo-Abfrage liefert bei Fine-grained-Tokens die Rechte des Kontos,
+     * deshalb ein Schreibversuch mit absichtlich falscher Versionsnummer (sha):
+     * erlaubt → 409 (nichts wird geändert), nicht erlaubt → 403/404.
+     * Rückgabe: true / false / null (Repo leer, nicht prüfbar).
+     */
     async canPush() {
-      const res = await ghFetch(api);
-      if (!res.ok) throw await errorFrom(res);
-      const info = await res.json();
-      const br = await ghFetch(`${api}/branches/${encodeURIComponent(branch)}`);
-      if (!br.ok) throw await errorFrom(br);
-      return !!(info.permissions && info.permissions.push);
+      const list = await ghFetch(`${api}/contents/?ref=${encodeURIComponent(branch)}&t=${Date.now()}`);
+      if (list.status === 404) {
+        const repoRes = await ghFetch(api);
+        if (!repoRes.ok) throw await errorFrom(repoRes);
+        return null; // Repo existiert, ist aber leer
+      }
+      if (!list.ok) throw await errorFrom(list);
+      const items = await list.json();
+      const file = Array.isArray(items) && items.find((x) => x.type === 'file');
+      if (!file) return null;
+      const res = await ghFetch(`${api}/contents/${file.path}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: 'Tank-App: Berechtigungstest', content: '', sha: '0'.repeat(40), branch }),
+      });
+      if (res.status === 409 || res.status === 422) return true;
+      if (res.status === 403 || res.status === 404) return false;
+      if (res.status === 401) throw await errorFrom(res);
+      return res.ok;
     },
   };
 }
@@ -955,12 +974,16 @@ async function saveTeam(ev) {
 
 /** Team-Token muss ins Daten-Repo schreiben dürfen, aber NICHT ins App-Repo. */
 async function checkTokens(team, appToken) {
-  if (!(await GitHubClient(team).canPush())) throw new Error('Der Team-Token hat keine Schreibrechte auf das Daten-Repo.');
+  if ((await GitHubClient(team).canPush()) === false) {
+    throw new Error(`Der Team-Token hat keine Schreibrechte auf ${team.owner}/${team.repo} (Contents: Read and write?).`);
+  }
   let teamOnApp = false;
   try { teamOnApp = await GitHubClient({ ...APP_REPO, token: team.token }).canPush(); } catch { teamOnApp = false; }
-  if (teamOnApp) throw new Error(`Der Team-Token darf auch ins App-Repo ${APP_REPO.owner}/${APP_REPO.repo} schreiben. Bitte auf das Daten-Repo beschränken.`);
-  if (!(await GitHubClient({ ...APP_REPO, token: appToken }).canPush())) {
-    throw new Error(`Der Admin-Token hat keine Schreibrechte auf ${APP_REPO.owner}/${APP_REPO.repo}.`);
+  if (teamOnApp === true) {
+    throw new Error(`Der Team-Token darf auch ins App-Repo ${APP_REPO.owner}/${APP_REPO.repo} schreiben. Bitte beim Token unter „Repository access“ nur ${team.repo} auswählen.`);
+  }
+  if ((await GitHubClient({ ...APP_REPO, token: appToken }).canPush()) === false) {
+    throw new Error(`Der Admin-Token hat keine Schreibrechte auf ${APP_REPO.owner}/${APP_REPO.repo} (Contents: Read and write?).`);
   }
 }
 
