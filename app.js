@@ -706,14 +706,17 @@ async function createAccount(ev) {
   if (!validUser(username)) return toast('Benutzername: 3–30 Zeichen, nur a–z, 0–9, Punkt, Minus, Unterstrich.', true);
   if (password.length < MIN_PW) return toast(`Das Passwort muss mindestens ${MIN_PW} Zeichen haben.`, true);
   if (state.accounts.accounts.some((a) => a.username === username)) return toast(`Den Benutzernamen „${username}“ gibt es schon.`, true);
-  const personId = uid();
+  // Bestehende Person gleichen Namens (noch ohne Konto) übernehmen, damit ihre Tankvorgänge dazugehören
+  const linked = new Set(state.accounts.accounts.map((x) => x.personId));
+  const existing = state.data.users.find((u) => !linked.has(u.id) && collator.compare(u.name, name) === 0);
+  const personId = existing ? existing.id : uid();
   const ok = await withBusy(async () => {
     const rec = await AUTH.createAccount({ username, name, role, personId, password }, state.admin.adminKey, state.team, AUTH.adminPayload(state.admin));
     await mutateAccounts((file) => {
       if (file.accounts.some((a) => a.username === username)) throw new Error(`Den Benutzernamen „${username}“ gibt es schon.`);
       file.accounts.push(rec);
     });
-    await mutate('users', (rows) => { rows.push({ id: personId, name, erstellt: nowStamp() }); });
+    await mutate('users', (rows) => { if (!rows.some((u) => u.id === personId)) rows.push({ id: personId, name, erstellt: nowStamp() }); });
   }, `${name} angelegt – Benutzername und Passwort weitergeben.`);
   if (ok) {
     f.reset();
