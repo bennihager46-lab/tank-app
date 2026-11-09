@@ -398,6 +398,21 @@ function setSync(ok, msg) {
   el.title = ok ? `Angemeldet als ${state.user.name} · Daten: ${state.backend.label}` : (msg || 'Fehler');
   el.classList.toggle('err', !ok);
 }
+/** Eigene Bestätigungsabfrage – das native confirm() wird in manchen
+    Browsern/Web-Apps nicht angezeigt und liefert dann still „Abbrechen“. */
+function confirmDialog(text, okLabel = 'OK', danger = false) {
+  return new Promise((resolve) => {
+    const dlg = $('#confirmDialog');
+    $('#confirmText').textContent = text;
+    const ok = $('#confirmOk');
+    ok.textContent = okLabel;
+    ok.classList.toggle('danger-fill', danger);
+    dlg.returnValue = '';
+    dlg.onclose = () => resolve(dlg.returnValue === 'ok');
+    dlg.showModal();
+    ok.focus();
+  });
+}
 function formMsg(form, text, ok = false) {
   const el = $('.form-msg', form);
   el.textContent = text;
@@ -565,7 +580,7 @@ function editEntry(id) {
 
 async function deleteEntry(id) {
   const e = state.data.entries.find((x) => x.id === id);
-  if (!e || !canEditEntry(e) || !confirm(`Tankvorgang „${e.maschine}“ vom ${fmtDate(e.zeitstempel)} löschen?`)) return;
+  if (!e || !canEditEntry(e) || !(await confirmDialog(`Tankvorgang „${e.maschine}“ vom ${fmtDate(e.zeitstempel)} löschen?`, 'Löschen', true))) return;
   await withBusy(() => mutate('entries', (rows) => {
     const i = rows.findIndex((x) => x.id === id && canEditEntry(x));
     if (i >= 0) rows.splice(i, 1);
@@ -617,7 +632,7 @@ function openMachineDialog(id) {
     const vals = { name: f.elements.name.value.trim(), typ: f.typ.value, kennzeichen: f.kennzeichen.value.trim(), notiz: f.notiz.value.trim() };
     if (!vals.name) return;
     const dupe = state.data.machines.some((x) => x.id !== id && collator.compare(x.name, vals.name) === 0 && x.kennzeichen === vals.kennzeichen);
-    if (dupe && !confirm(`„${vals.name}“ gibt es schon. Trotzdem speichern?`)) return;
+    if (dupe && !(await confirmDialog(`„${vals.name}“ gibt es schon. Trotzdem speichern?`, 'Speichern'))) return;
     if (!m) {
       await withBusy(() => mutate('machines', (rows) => { rows.push({ id: uid(), ...vals, erstellt: nowStamp() }); }), 'Maschine angelegt');
     } else {
@@ -644,7 +659,7 @@ async function deleteMachine(id) {
   if (!m || !isAdmin()) return;
   const n = state.data.entries.filter((e) => e.maschine_id === id).length;
   const msg = `„${m.name}“ löschen?` + (n ? `\n\nDie ${n} Tankvorgänge dieser Maschine bleiben erhalten.` : '');
-  if (!confirm(msg)) return;
+  if (!(await confirmDialog(msg, 'Löschen', true))) return;
   await withBusy(() => mutate('machines', (rows) => {
     const i = rows.findIndex((x) => x.id === id);
     if (i >= 0) rows.splice(i, 1);
@@ -754,7 +769,7 @@ function editAccount(username) {
 async function deleteAccount(username) {
   const a = state.accounts.accounts.find((x) => x.username === username);
   if (!a || a.username === state.user.username) return;
-  if (!confirm(`Benutzer „${a.name}“ (@${a.username}) löschen?\n\nSeine Tankvorgänge bleiben in der Statistik erhalten.`)) return;
+  if (!(await confirmDialog(`Benutzer „${a.name}“ (@${a.username}) löschen?\n\nSeine Tankvorgänge bleiben in der Statistik erhalten.`, 'Löschen', true))) return;
   const ok = await withBusy(async () => {
     await mutateAccounts((file) => { file.accounts = file.accounts.filter((x) => x.username !== username); });
     await mutate('users', (rows) => {
@@ -1128,8 +1143,8 @@ async function submitSetup(ev) {
   if (!ok) formMsg(f, lastError || 'Einrichtung fehlgeschlagen.');
 }
 
-function logout() {
-  if (!confirm('Abmelden?')) return;
+async function logout() {
+  if (!(await confirmDialog('Wirklich abmelden?', 'Abmelden'))) return;
   store.del(SESSION_KEY);
   state.user = state.uk = state.team = state.admin = null;
   state.data = { entries: [], machines: [], users: [] };

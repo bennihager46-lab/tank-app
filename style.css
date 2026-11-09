@@ -277,3 +277,7 @@ body:not(.authed) { padding-bottom: 0; }
 .tank-as { margin: 0 0 14px; padding: 10px 12px; background: var(--surface-2); border-radius: 10px; font-size: .95rem; }
 .account-info { margin: 0 0 12px; line-height: 1.7; }
 .tag.admin { background: var(--accent-soft); color: var(--accent); }
+
+dialog.confirm { width: min(400px, calc(100vw - 32px)); }
+.confirm-text { white-space: pre-line; margin: 0 0 18px; font-size: 1rem; }
+.btn.danger-fill { background: #b3261e; border-color: #b3261e; color: #fff; }
