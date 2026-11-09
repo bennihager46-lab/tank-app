@@ -209,7 +209,7 @@ fieldset.seg-field legend { font-weight: 600; font-size: .92rem; margin-bottom: 
 /* ---------- Tab bar ---------- */
 .tabbar {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
-  display: grid; grid-template-columns: repeat(5, 1fr);
+  display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
   background: var(--surface); border-top: 1px solid var(--border);
   padding-bottom: env(safe-area-inset-bottom);
 }
@@ -253,3 +253,27 @@ dialog::backdrop { background: rgba(0,0,0,.45); }
   .row2 { grid-template-columns: 1fr; gap: 0; }
   .kpi-val { font-size: 1.05rem; }
 }
+
+/* ---------- Anmeldung & Rollen ---------- */
+body:not(.authed) .app-only { display: none !important; }
+body.authed .auth { display: none; }
+body:not([data-role="admin"]) .admin-only { display: none !important; }
+body[data-role="admin"] .user-only { display: none !important; }
+body.demo .gh-only { display: none !important; }
+body:not(.authed) { padding-bottom: 0; }
+
+.auth { min-height: 100vh; min-height: 100dvh; display: grid; place-items: start center; padding: 8vh 16px 32px; }
+.auth-card { width: 100%; max-width: 440px; }
+.auth-brand { display: flex; align-items: center; gap: 8px; color: var(--accent); font-weight: 700; font-size: 1.15rem; margin-bottom: 12px; }
+.auth-brand svg { width: 26px; height: 26px; fill: currentColor; }
+.auth h2 { margin-top: 8px; }
+.form-msg { color: var(--danger); min-height: 1.2em; margin: 10px 0 0; }
+.form-msg.ok { color: var(--accent); }
+.demo-banner { background: #eda100; color: #1a1300; text-align: center; font-size: .82rem; font-weight: 600; padding: 4px 12px; }
+
+.input-btn { display: flex; gap: 6px; }
+.input-btn input { flex: 1; min-width: 0; }
+.input-btn .btn { flex-shrink: 0; font-size: .85rem; padding: 8px 10px; }
+.tank-as { margin: 0 0 14px; padding: 10px 12px; background: var(--surface-2); border-radius: 10px; font-size: .95rem; }
+.account-info { margin: 0 0 12px; line-height: 1.7; }
+.tag.admin { background: var(--accent-soft); color: var(--accent); }

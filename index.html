@@ -5,35 +5,111 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#1f6f43">
   <title>Tank-App</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=3">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%231f6f43' d='M4 3h9a1 1 0 0 1 1 1v8h1a2 2 0 0 1 2 2v3a1 1 0 0 0 2 0V9l-2-2 1.4-1.4L21 8.2V17a3 3 0 0 1-6 0v-3h-1v7H3V4a1 1 0 0 1 1-1zm1 2v5h7V5H5z'/%3E%3C/svg%3E">
 </head>
 <body>
-  <header class="topbar">
+  <div id="demoBanner" class="demo-banner" hidden>Demo-Modus – alle Daten bleiben nur in diesem Browser.</div>
+
+  <!-- ================= ANMELDUNG / ERSTEINRICHTUNG ================= -->
+  <div id="auth" class="auth">
+    <div class="auth-card card">
+      <div class="auth-brand">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h9a1 1 0 0 1 1 1v8h1a2 2 0 0 1 2 2v3a1 1 0 0 0 2 0V9l-2-2 1.4-1.4L21 8.2V17a3 3 0 0 1-6 0v-3h-1v7H3V4a1 1 0 0 1 1-1zm1 2v5h7V5H5z"/></svg>
+        <span>Tank-App</span>
+      </div>
+
+      <p id="authLoading" class="muted">Lade …</p>
+
+      <form id="loginForm" class="form" autocomplete="on" hidden>
+        <h1>Anmelden</h1>
+        <label>Benutzername
+          <input name="username" type="text" autocomplete="username" autocapitalize="off" spellcheck="false" required>
+        </label>
+        <label>Passwort
+          <input name="password" type="password" autocomplete="current-password" required>
+        </label>
+        <label class="radio"><input type="checkbox" name="remember" checked> Angemeldet bleiben</label>
+        <button class="btn primary big" type="submit">Anmelden</button>
+        <p class="form-msg small" role="alert"></p>
+      </form>
+
+      <form id="setupForm" class="form" autocomplete="off" hidden>
+        <h1>Ersteinrichtung</h1>
+        <p class="small muted">Es gibt noch keine Benutzer. Lege hier dein Admin-Konto an.</p>
+        <label>Dein Name
+          <input name="name" type="text" maxlength="60" required placeholder="z. B. Benedikt">
+        </label>
+        <label>Benutzername
+          <input name="username" type="text" autocomplete="username" autocapitalize="off" spellcheck="false" required placeholder="z. B. benedikt">
+        </label>
+        <div class="row2">
+          <label>Passwort
+            <input name="password" type="password" autocomplete="new-password" required minlength="10">
+          </label>
+          <label>Wiederholen
+            <input name="password2" type="password" autocomplete="new-password" required minlength="10">
+          </label>
+        </div>
+        <div class="gh-only">
+          <h2>Daten-Repository</h2>
+          <div class="row2">
+            <label>Besitzer
+              <input name="owner" type="text" autocapitalize="off" spellcheck="false">
+            </label>
+            <label>Repository
+              <input name="repo" type="text" autocapitalize="off" spellcheck="false" value="tank-daten">
+            </label>
+          </div>
+          <div class="row2">
+            <label>Branch
+              <input name="branch" type="text" autocapitalize="off" spellcheck="false" value="main">
+            </label>
+            <label>Ordner
+              <input name="folder" type="text" autocapitalize="off" spellcheck="false" value="data">
+            </label>
+          </div>
+          <label><span>Team-Token <span class="opt">(nur Daten-Repo, Contents: Read and write)</span></span>
+            <input name="teamToken" type="password" autocapitalize="off" spellcheck="false" placeholder="github_pat_…">
+          </label>
+          <label><span>Admin-Token <span class="opt">(nur App-Repo, Contents: Read and write)</span></span>
+            <input name="adminToken" type="password" autocapitalize="off" spellcheck="false" placeholder="github_pat_…">
+          </label>
+          <p class="small muted">Beide Tokens werden nur verschlüsselt gespeichert. Den Team-Token bekommen alle Benutzer automatisch, den Admin-Token nur Admins.</p>
+        </div>
+        <button class="btn primary big" type="submit">Einrichten &amp; anmelden</button>
+        <p class="form-msg small" role="alert"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= APP ================= -->
+  <header class="topbar app-only">
     <div class="brand">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h9a1 1 0 0 1 1 1v8h1a2 2 0 0 1 2 2v3a1 1 0 0 0 2 0V9l-2-2 1.4-1.4L21 8.2V17a3 3 0 0 1-6 0v-3h-1v7H3V4a1 1 0 0 1 1-1zm1 2v5h7V5H5z"/></svg>
       <span>Tank-App</span>
     </div>
     <div class="sync">
-      <span id="syncStatus" class="sync-status" title="Speicherort">…</span>
+      <span id="syncStatus" class="sync-status">…</span>
       <button id="reloadBtn" class="icon-btn" type="button" aria-label="Daten neu laden" title="Daten neu laden">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.65 6.35A8 8 0 1 0 19.73 14h-2.08A6 6 0 1 1 12 6a5.9 5.9 0 0 1 4.22 1.78L13 11h7V4z"/></svg>
       </button>
     </div>
   </header>
 
-  <main>
+  <main class="app-only">
     <!-- ============ TANKEN ============ -->
-    <section id="tab-tanken" class="tab active" aria-labelledby="nav-tanken">
+    <section id="tab-tanken" class="tab active">
       <h1>Tanken</h1>
       <div id="tankHint" class="hint" hidden></div>
       <form id="tankForm" class="card form" autocomplete="off">
         <label>Maschine / Auto
           <select id="tankMachine" required></select>
         </label>
-        <label>Tankende Person
-          <select id="tankPerson" required></select>
+        <label class="admin-only">Tankende Person
+          <select id="tankPerson"></select>
         </label>
+        <p class="user-only tank-as">Tankt als <b id="tankAs"></b></p>
         <div class="row2">
           <label>Diesel (Liter)
             <input id="tankDiesel" type="text" inputmode="decimal" placeholder="0" pattern="[0-9]*[.,]?[0-9]*">
@@ -50,33 +126,54 @@
       </form>
 
       <div class="list-head">
-        <h2>Letzte Tankvorgänge</h2>
+        <h2 id="entryListTitle">Letzte Tankvorgänge</h2>
         <button id="showAllEntries" class="btn link" type="button">Alle anzeigen</button>
       </div>
       <ul id="entryList" class="list"></ul>
     </section>
 
     <!-- ============ MASCHINEN ============ -->
-    <section id="tab-maschinen" class="tab" aria-labelledby="nav-maschinen">
+    <section id="tab-maschinen" class="tab">
       <div class="list-head">
         <h1>Maschinen &amp; Autos</h1>
-        <button id="addMachine" class="btn primary" type="button">+ Neu</button>
+        <button id="addMachine" class="btn primary admin-only" type="button">+ Neu</button>
       </div>
       <ul id="machineList" class="list"></ul>
     </section>
 
-    <!-- ============ NUTZER ============ -->
-    <section id="tab-nutzer" class="tab" aria-labelledby="nav-nutzer">
-      <h1>Nutzer</h1>
-      <form id="userForm" class="card form inline-form" autocomplete="off">
-        <input id="userName" type="text" placeholder="Name der Person" maxlength="60" required aria-label="Name der Person">
-        <button class="btn primary" type="submit">Hinzufügen</button>
+    <!-- ============ BENUTZER (Admin) ============ -->
+    <section id="tab-benutzer" class="tab">
+      <h1>Benutzer</h1>
+      <form id="accountForm" class="card form" autocomplete="off">
+        <h2>Neuen Benutzer anlegen</h2>
+        <div class="row2">
+          <label>Name
+            <input name="name" type="text" maxlength="60" required placeholder="z. B. Anna Müller">
+          </label>
+          <label>Benutzername
+            <input name="username" type="text" maxlength="30" required autocapitalize="off" spellcheck="false" placeholder="z. B. anna">
+          </label>
+        </div>
+        <label><span>Passwort <span class="opt">(mind. 10 Zeichen)</span></span>
+          <span class="input-btn">
+            <input name="password" type="text" required minlength="10" autocapitalize="off" spellcheck="false">
+            <button type="button" class="btn" data-genpw title="Passwort erzeugen">Erzeugen</button>
+          </span>
+        </label>
+        <label>Rolle
+          <select name="role">
+            <option value="user">Nutzer</option>
+            <option value="admin">Admin</option>
+          </select>
+        </label>
+        <p class="small muted">Nutzer tanken nur unter ihrem eigenen Namen. Admins verwalten Maschinen, Benutzer und alle Einträge.</p>
+        <button class="btn primary" type="submit">Benutzer anlegen</button>
       </form>
-      <ul id="userList" class="list"></ul>
+      <ul id="accountList" class="list"></ul>
     </section>
 
     <!-- ============ STATISTIK ============ -->
-    <section id="tab-statistik" class="tab" aria-labelledby="nav-statistik">
+    <section id="tab-statistik" class="tab">
       <h1>Statistik</h1>
       <div class="filters">
         <select id="statRange" aria-label="Zeitraum">
@@ -121,76 +218,75 @@
       </div>
     </section>
 
-    <!-- ============ EINSTELLUNGEN ============ -->
-    <section id="tab-einstellungen" class="tab" aria-labelledby="nav-einstellungen">
-      <h1>Einstellungen</h1>
-      <form id="settingsForm" class="card form" autocomplete="off">
-        <fieldset class="seg-field">
-          <legend>Speicherort der CSV-Dateien</legend>
-          <label class="radio"><input type="radio" name="mode" value="local" checked> Nur dieses Gerät (Test)</label>
-          <label class="radio"><input type="radio" name="mode" value="github"> GitHub-Repository (geteilt)</label>
-        </fieldset>
-        <div id="ghFields">
-          <div class="row2">
-            <label>Besitzer (User/Org)
-              <input name="owner" type="text" placeholder="benutzername" autocapitalize="off" spellcheck="false">
-            </label>
-            <label>Repository
-              <input name="repo" type="text" placeholder="tank-daten" autocapitalize="off" spellcheck="false">
-            </label>
-          </div>
-          <div class="row2">
-            <label>Branch
-              <input name="branch" type="text" placeholder="main" autocapitalize="off" spellcheck="false">
-            </label>
-            <label>Ordner
-              <input name="folder" type="text" placeholder="data" autocapitalize="off" spellcheck="false">
-            </label>
-          </div>
-          <label>Zugriffstoken (Fine-grained, „Contents: Read and write“)
-            <input name="token" type="password" placeholder="github_pat_…" autocapitalize="off" spellcheck="false">
-          </label>
-          <p class="muted small">Der Token bleibt nur auf diesem Gerät gespeichert. Jede Person trägt einmal ihren eigenen Token ein.</p>
-        </div>
-        <div class="btn-row">
-          <button class="btn primary" type="submit">Speichern &amp; verbinden</button>
-          <button id="testConn" class="btn" type="button">Verbindung testen</button>
-        </div>
-        <p id="settingsMsg" class="small" role="status"></p>
-      </form>
+    <!-- ============ KONTO ============ -->
+    <section id="tab-konto" class="tab">
+      <h1>Konto</h1>
+      <div class="card">
+        <p class="account-info">Angemeldet als <b id="meName"></b> <span id="meRole" class="tag"></span><br><span id="meUser" class="muted small"></span></p>
+        <button id="logoutBtn" class="btn" type="button">Abmelden</button>
+      </div>
 
       <div class="card form">
         <h2>Export</h2>
         <div class="btn-row wrap">
           <button class="btn" type="button" data-export="entries">Tankvorgänge.csv</button>
-          <button class="btn" type="button" data-export="machines">Maschinen.csv</button>
-          <button class="btn" type="button" data-export="users">Nutzer.csv</button>
+          <button class="btn admin-only" type="button" data-export="machines">Maschinen.csv</button>
+          <button class="btn admin-only" type="button" data-export="users">Nutzer.csv</button>
           <button id="exportXlsx" class="btn" type="button">Alles als Excel (.xlsx)</button>
         </div>
       </div>
+
+      <form id="teamForm" class="card form admin-only gh-only" autocomplete="off">
+        <h2>Team-Zugang (Daten-Repository)</h2>
+        <div class="row2">
+          <label>Besitzer
+            <input name="owner" type="text" autocapitalize="off" spellcheck="false" required>
+          </label>
+          <label>Repository
+            <input name="repo" type="text" autocapitalize="off" spellcheck="false" required>
+          </label>
+        </div>
+        <div class="row2">
+          <label>Branch
+            <input name="branch" type="text" autocapitalize="off" spellcheck="false" required>
+          </label>
+          <label>Ordner
+            <input name="folder" type="text" autocapitalize="off" spellcheck="false">
+          </label>
+        </div>
+        <label><span>Neuer Team-Token <span class="opt">(leer = unverändert)</span></span>
+          <input name="teamToken" type="password" autocapitalize="off" spellcheck="false" placeholder="github_pat_…">
+        </label>
+        <label><span>Neuer Admin-Token <span class="opt">(leer = unverändert)</span></span>
+          <input name="adminToken" type="password" autocapitalize="off" spellcheck="false" placeholder="github_pat_…">
+        </label>
+        <p class="small muted">Wird für alle Benutzer übernommen – niemand muss etwas neu eintragen. Nach dem Löschen eines Benutzers: neuen Team-Token erstellen, hier eintragen und den alten Token auf GitHub löschen.</p>
+        <button class="btn primary" type="submit">Für alle Benutzer übernehmen</button>
+        <p class="form-msg small" role="status"></p>
+      </form>
     </section>
   </main>
 
-  <nav class="tabbar" aria-label="Bereiche">
-    <button id="nav-tanken" data-tab="tanken" class="on" type="button">
+  <nav class="tabbar app-only" aria-label="Bereiche">
+    <button data-tab="tanken" class="on" type="button">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h9a1 1 0 0 1 1 1v8h1a2 2 0 0 1 2 2v3a1 1 0 0 0 2 0V9l-2-2 1.4-1.4L21 8.2V17a3 3 0 0 1-6 0v-3h-1v7H3V4a1 1 0 0 1 1-1zm1 2v5h7V5H5z"/></svg>
       <span>Tanken</span>
     </button>
-    <button id="nav-maschinen" data-tab="maschinen" type="button">
+    <button data-tab="maschinen" type="button">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 11l1.5-4.5A2 2 0 0 1 8.4 5h7.2a2 2 0 0 1 1.9 1.5L19 11a2 2 0 0 1 2 2v4h-2v2h-3v-2H8v2H5v-2H3v-4a2 2 0 0 1 2-2zm2.1 0h9.8l-1-3H8.1zM6.5 15a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm11 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/></svg>
       <span>Maschinen</span>
     </button>
-    <button id="nav-nutzer" data-tab="nutzer" type="button">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2c-3.3 0-8 1.7-8 5v1h16v-1c0-3.3-4.7-5-8-5z"/></svg>
-      <span>Nutzer</span>
+    <button data-tab="benutzer" class="admin-only" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2c-3 0-7 1.5-7 4.5V20h14v-1.5C16 15.5 12 14 9 14zm7.5-2.2a3.5 3.5 0 0 0 0-6.6 5.5 5.5 0 0 1 0 6.6zM18 14.2c1.7.8 4 2 4 4.3V20h-4v-1.5c0-1.7-.7-3.1-2-4.1z"/></svg>
+      <span>Benutzer</span>
     </button>
-    <button id="nav-statistik" data-tab="statistik" type="button">
+    <button data-tab="statistik" type="button">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10h3v10zm6.5 0V4h3v16zM17 20v-7h3v7z"/></svg>
       <span>Statistik</span>
     </button>
-    <button id="nav-einstellungen" data-tab="einstellungen" type="button">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.4 13a7.5 7.5 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.3 7.3 0 0 0-1.7-1L15 3h-4l-.4 2.9a7.3 7.3 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.5 7.5 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1c.5.4 1.1.7 1.7 1L11 21h4l.4-2.9c.6-.3 1.2-.6 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" transform="translate(-1 0)"/></svg>
-      <span>Einstellungen</span>
+    <button data-tab="konto" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2c-3.3 0-8 1.7-8 5v1h16v-1c0-3.3-4.7-5-8-5z"/></svg>
+      <span>Konto</span>
     </button>
   </nav>
 
@@ -254,10 +350,38 @@
     </form>
   </dialog>
 
+  <!-- Dialog: Benutzer bearbeiten -->
+  <dialog id="accountDialog">
+    <form method="dialog" id="accountEditForm" class="form" autocomplete="off">
+      <h2>Benutzer bearbeiten</h2>
+      <p class="small muted" id="accountEditUser"></p>
+      <label>Name
+        <input name="name" type="text" maxlength="60" required>
+      </label>
+      <label>Rolle
+        <select name="role">
+          <option value="user">Nutzer</option>
+          <option value="admin">Admin</option>
+        </select>
+      </label>
+      <label><span>Neues Passwort <span class="opt">(leer = unverändert)</span></span>
+        <span class="input-btn">
+          <input name="password" type="text" minlength="10" autocapitalize="off" spellcheck="false">
+          <button type="button" class="btn" data-genpw title="Passwort erzeugen">Erzeugen</button>
+        </span>
+      </label>
+      <div class="btn-row end">
+        <button class="btn" value="cancel" formnovalidate>Abbrechen</button>
+        <button class="btn primary" value="ok">Speichern</button>
+      </div>
+    </form>
+  </dialog>
+
   <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
   <div id="busy" class="busy" hidden><div class="spinner"></div></div>
 
-  <script src="app.js"></script>
+  <script src="auth.js?v=3"></script>
+  <script src="app.js?v=3"></script>
 </body>
 </html>
