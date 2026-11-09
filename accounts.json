@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "accounts": [
+    {
+      "username": "bennihager46",
+      "name": "Benedikt",
+      "role": "admin",
+      "personId": "e99310e4",
+      "created": "2026-11-09 23:36:35",
+      "salt": "mOjJ+H35/T4J3QlS8vGEMg==",
+      "iter": 600000,
+      "kw": "kW1Vf175PNhhqAoW.iv/aNcnVbEmmxMy/aHTxdFoQ4Txi+zPUmNgsKT3C62AgPCcyrrXo7xucMqJ29XzN",
+      "ka": "+384mTUicWoAUzpR.5ilLEOyam/G7+hAcmVuqTV95dFDUeYWDOKXu4DQwY+ttesyjoZJLOSh/lT+mBBWL",
+      "vault": "7rhwQerWsBg+qqJD.kzD7ZvRiG+SCDYvoLnblrHGPo90p0m86CR0U+TE73VjiFYxqEVOuctdnPcRYRxpEBScaS0MIA3j+FX8kiEzwxLLIVBjIhZFo7IyvSUvMsUbizCmAP2gmEEtgLllxmckUA3p4amYC2xUOWde1kOJlmiVETpFjoN5ugTexEpyKZseq7HVJsedtb9fNjuscWApDU/6sWLXXxfyBJe8HJBvuh0sKf6khFRAzicmwXYLr5Xx6J863Bg+p+aqcvcAYwF5qYlohSVaI/7E=",
+      "admin": "K4pXG6a+dCaL9o2B.qraQjfNx2kyC331/cYYW0vjtPKZyn7oj+OvdwTycSnj/F5FQTRCh2OxZHNRWxT+ClFi5BWRI5eFjMVS2FCcVnbq/cPRpKUAoFan2+tRyomtm0uQCzd3xet4QQyD95u+clPhLlNyz0xKyAxoHEmlQ+29l7pZnCJaGwyDo6ehgtFt/3rfv/wQhpIIPNYSYY94Ae2hI/9xYo/wWWjtmkLNdl1LpCXDlM07E7qD8XwIcSuOf8TqCLTs="
+    }
+  ]
+}
