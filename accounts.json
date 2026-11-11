@@ -13,6 +13,18 @@
       "ka": "+384mTUicWoAUzpR.5ilLEOyam/G7+hAcmVuqTV95dFDUeYWDOKXu4DQwY+ttesyjoZJLOSh/lT+mBBWL",
       "vault": "7rhwQerWsBg+qqJD.kzD7ZvRiG+SCDYvoLnblrHGPo90p0m86CR0U+TE73VjiFYxqEVOuctdnPcRYRxpEBScaS0MIA3j+FX8kiEzwxLLIVBjIhZFo7IyvSUvMsUbizCmAP2gmEEtgLllxmckUA3p4amYC2xUOWde1kOJlmiVETpFjoN5ugTexEpyKZseq7HVJsedtb9fNjuscWApDU/6sWLXXxfyBJe8HJBvuh0sKf6khFRAzicmwXYLr5Xx6J863Bg+p+aqcvcAYwF5qYlohSVaI/7E=",
       "admin": "K4pXG6a+dCaL9o2B.qraQjfNx2kyC331/cYYW0vjtPKZyn7oj+OvdwTycSnj/F5FQTRCh2OxZHNRWxT+ClFi5BWRI5eFjMVS2FCcVnbq/cPRpKUAoFan2+tRyomtm0uQCzd3xet4QQyD95u+clPhLlNyz0xKyAxoHEmlQ+29l7pZnCJaGwyDo6ehgtFt/3rfv/wQhpIIPNYSYY94Ae2hI/9xYo/wWWjtmkLNdl1LpCXDlM07E7qD8XwIcSuOf8TqCLTs="
+    },
+    {
+      "username": "claudia",
+      "name": "Claudia",
+      "role": "user",
+      "personId": "034b0b66",
+      "created": "2026-11-11 15:46:58",
+      "salt": "0Z+8d7SIuv7zE+ff6AXjkA==",
+      "iter": 600000,
+      "kw": "UyZLicNgVhjg4mOE.dc+Sx/wlPMaQDL9kKXzxE1d4Jjo4+huLsmHfJ+1oOVjEFSIYTcpbJW4wATgPehR9",
+      "ka": "safGkTsiYygzJ03v.Q80GfV5bx1RFssWJ3XOJDuvHqyni0O72D04gvfm4JU9Mfs1ssmGOLhFQmHKX6cim",
+      "vault": "poYmaNM0pe+L+0uH.WYFLyTCBPjpT+lP4LG5ph9cPpifT0Axsvw3tZqyYfJOm3H9+ZDC5c2o5/BT3OGf3x2r9n0Wh35F6zHBd+Hms7Mr8xlbUZYRZQh+Kd9096hP8jNkKHUe7oNWG6+zXp7va/yqsw3qH0h9oZTIv4ae6MfuNllSe3iYHnMTt6SBCg3AqNTn1TWL7IRXSDwxwnwgho7VX4kfU9NSUf00whGYQLsgOH0N7TQFW6+fZz3DFfqWxsaWhVO7l50OxobVOeTmlTZR+yrJGdrI="
     }
   ]
 }
